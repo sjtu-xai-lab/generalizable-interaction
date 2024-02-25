@@ -5,7 +5,7 @@ This repository contains the Python implementation of the paper "Defining and ex
 Generalizable interactions can be installed in the Python 3 environment:
 
 ```
-pip3 install git+https://github.com/csluchen/generalizable-interaction
+pip3 install git+https://github.com/sjtu-xai-lab/generalizable-interaction
 ```
 
 
