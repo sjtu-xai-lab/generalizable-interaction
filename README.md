@@ -11,12 +11,23 @@ pip3 install git+https://github.com/csluchen/generalizable-interaction
 
 ## How to use 
 ### Given two DNNs trained for the same task
-- Sentiment Classification on the SST-2 dataset
+- Sentiment classification with language models
 ```
 python train.py
 ```
+or directly access the pre-trained BERT-base and BERT-large models, which were fine-tined on the SST-2 dataset in [Google Drive](https://drive.google.com/file/d/18NWWTXVvs6izdjj3fbEPNgsZqQw61WuA/view?usp=sharing). You can download `pretrained_model.zip` and unzip it into path like ```./pretrained_model/{DATASET}/{model}.pth```.
 
-or directly access the pre-trained BERT-base and BERT-large models, which were fine-tined on SST-2 dataset in [Google Drive](https://drive.google.com/file/d/18NWWTXVvs6izdjj3fbEPNgsZqQw61WuA/view?usp=sharing). You can download `pretrained_model.zip` and unzip it into path like ```./pretrained_model/{DATASET}/{model}.pth```.
+- Dialogue task with large language models
+
+Directly access the pre-trained LLaMA and OPT-1.3B models from ???. You can download `pretrained_model.zip` and unzip it into path like ```./pretrained_model/{DATASET}/{model}.pth```.
+
+
+- Image classification task with vision models
+
+Directly the pre-trained ResNet-20 and VGG-16 models, which were trained on the MNIST dataset in ???. You can download `pretrained_model.zip` and unzip it into path like ```./pretrained_model/{DATASET}/{model}.pth```.
+
+
+
 
 ### Compute generalizable interactions shared by DNNs
 
@@ -27,9 +38,6 @@ or directly access the pre-trained BERT-base and BERT-large models, which were f
 
 ## Sample notebooks
 
-For image dataset, we provide a Jupyter notebook for the `CIFAR-10` and `MNIST` dataset for calculating Shapley values via HarsanyiNet under ```notebooks/CIFAR-10.ipynb``` and ```notebooks/MNIST.ipynb```, respectively.
-
-For tabular dataset, we provide a Jupyter notebook for the `Census` dataset for calculating Shapley values via HarsanyiNet under ```notebooks/Census.ipynb```
 
 
 ## Citations
