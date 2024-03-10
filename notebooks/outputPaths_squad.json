@@ -1,0 +1,8 @@
+{
+    "disjoint": {
+      "llama" : "/data1/cl/distillation/output/dialogue/0830/llama",
+      "opt": "/data1/cl/distillation/output/dialogue/0830/opt"
+    },
+    "joint": "/data1/cl/distillation/output/dialogue/0913/joint_llama_opt/pthres_0.5/r_0.1"
+  }
+  

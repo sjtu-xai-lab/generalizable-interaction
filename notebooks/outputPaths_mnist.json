@@ -1,0 +1,7 @@
+{
+    "disjoint": {
+      "resnet20": "/data1/cl/distillation/output/image-manual-segment/dataset=simpleisthree_model=resnet20_epoch=50_bs=128_lr=0.01_logspace=1_seed=1/manual_segment_version-3/and-or_dim=0-v0_input=integrated_bg_baseline=zero_loss=l1_qthres=0.02_qstd=vN-v0_lr=1e-05_niter=30000/0.5",
+      "vgg16": "/data1/cl/distillation/output/image-manual-segment/dataset=simpleisthree_model=vgg16_bn_epoch=50_bs=128_lr=0.01_logspace=1_seed=1/manual_segment_version-3/and-or_dim=0-v0_input=integrated_bg_baseline=zero_loss=l1_qthres=0.02_qstd=vN-v0_lr=1e-05_niter=30000/0.5"
+    },
+    "joint": "/data1/cl/distillation/output/image-manual-segment/dataset=simpleisthree_model=resnet20_epoch=50_bs=128_lr=0.01_logspace=1_seed=1/manual_segment_version-3/and-or_dim=0-v0_input=integrated_bg_baseline=zero_loss=l1_joint_optimization_qthres=0.02_qstd=vN-v0_lr=1e-05_niter=20000/0.5"
+  }

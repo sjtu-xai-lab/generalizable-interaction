@@ -1,0 +1,9 @@
+{
+  "disjoint": {
+    "bert-base": "/data1/cl/generalizable-interaction/output/task1/traditional/base",
+    "bert-large": "/data1/cl/generalizable-interaction/output/task1/traditional/large"
+  },
+  "joint": "/data1/cl/generalizable-interaction/output/task1/generalizable",
+  "baseline_base":"/data1/cl/distillation/output/base/2023-11-14-19-59-58_q_tricks_False/PAD",
+  "baseline_large": "/data1/cl/distillation/output/large/2023-11-14-20-23-56_q_tricks_False/PAD"
+}
