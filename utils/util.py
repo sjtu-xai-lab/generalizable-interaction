@@ -11,14 +11,14 @@ from typing import List
 import string
 import re
 
-from harsanyi.and_or_harsanyi import AndOrHarsanyi, AndOrHarsanyiSparsifier
+from harsanyi.and_or_harsanyi import AndOrHarsanyi, AndOrHarsanyiSparsifier  # AndHarsanyi
 from harsanyi.interaction_utils import get_mask_input_func_nlp, flatten, reorganize_and_or_harsanyi
 
 def get_inds(data_path, dataset = "sst2"):
     '''
 
     :param data_path:
-    :return: A list consisting of the indices of sentences
+    :return: list of ind in `sample_[inds]`
     '''
     if dataset == "mnist":
         samples = os.listdir(data_path)
@@ -48,7 +48,6 @@ def get_inds(data_path, dataset = "sst2"):
     
 def get_masks(playnumber : int):
     rows = 2 ** playnumber
-
     mask = np.zeros((rows, playnumber), dtype=bool)
     
     for row in range(rows):
@@ -67,7 +66,7 @@ def setup_seed(seed=1029):
     np.random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
-    torch.cuda.manual_seed_all(seed)
+    torch.cuda.manual_seed_all(seed) # if you are using multi-GPU.
 
 
 def get_stop_words():
@@ -88,8 +87,9 @@ def get_samples_and_input_variables(args, model, forward_func, baseline, interac
                                     stop_words, sentences,
                                     seqs, masks, segments, labels,
                                     model_str=''):
-    SELECTED_SAMPLE_PATH =  os.path.join(args.output_path, 'selected_sample_indices.pkl')
-    INPUT_VARIABLE_PATH =  os.path.join(args.output_path, 'input_variable_indices.pkl')
+    SELECTED_SAMPLE_PATH =  os.path.join(args.output_path, 'selected_sample_indices.pkl')  #"selected_indices_filtered.pkl"
+    INPUT_VARIABLE_PATH =  os.path.join(args.output_path, 'input_variable_indices.pkl')  #'inds_to_players_filtered.pkl'
+    #MODEL_OUTPUT_OF_SAMPLE_PATH = os.path.join(args.output_path, 'selected_sample_model_output.csv')
     if interaction_type == 'traditional':
         MODEL_OUTPUT_OF_SAMPLE_PATH = os.path.join(args.output_path, interaction_type, model_str)
     elif interaction_type == 'generalizable':
@@ -177,11 +177,11 @@ def get_samples_and_input_variables(args, model, forward_func, baseline, interac
 
                 with torch.no_grad():
                     if interaction_type == 'traditional':
-                        sample_seq = forward_func._get_embedding(input_ids=sample_s)
+                        sample_seq = forward_func._get_embedding(input_ids=sample_s)  # [1, 50, 768]
 
                     elif interaction_type == 'generalizable':
-                        sample_seq_1 = forward_func_1._get_embedding(input_ids=sample_s)
-                        sample_seq_2 = forward_func_2._get_embedding(input_ids=sample_s)
+                        sample_seq_1 = forward_func_1._get_embedding(input_ids=sample_s)  # [1, 50, 768]
+                        sample_seq_2 = forward_func_2._get_embedding(input_ids=sample_s)  # [1, 50, 1024]
 
 
                 # calculate the model output V(N)-V(\emptyset) for each sample
@@ -209,7 +209,7 @@ def get_samples_and_input_variables(args, model, forward_func, baseline, interac
                     print(sample_id, model_output)
                     table = table.append({'sample_index': sample_id, 'model': model_output}, ignore_index=True)
                     print(table)
-                    table.to_csv(os.path.join(MODEL_OUTPUT_OF_SAMPLE_PATH))
+                    table.to_csv(os.path.join(MODEL_OUTPUT_OF_SAMPLE_PATH))  # (MODEL_OUTPUT_OF_SAMPLE_PATH)
                 elif interaction_type == 'generalizable':
                     model_output_1, model_output_2 = get_vn_vempty(args, forward_func=[forward_func_1, forward_func_2],
                                   selected_dim=args.selected_dim,
@@ -236,6 +236,7 @@ def get_samples_and_input_variables(args, model, forward_func, baseline, interac
 
 
 def get_average_model_output(path, interaction_type, model_str=''):
+    # MODEL_OUTPUT_OF_SAMPLE_PATH = os.path.join(path, 'selected_sample_model_output.csv')
     if interaction_type == 'traditional':
         MODEL_OUTPUT_OF_SAMPLE_PATH = os.path.join(path, interaction_type, model_str, 'selected_sample_model_output.csv')
     elif interaction_type == 'generalizable':
@@ -260,6 +261,17 @@ def get_correct_sample_indices(model: nn.Module,
                                segments: torch.Tensor,
                                labels: torch.Tensor,
                                bs: int = 1):
+    """
+    Get samples which are correctly classified by the model
+
+    :param net:
+    :param seqs:
+    :param masks:
+    :param segments:
+    :param labels:
+    :param bs:
+    :return:
+    """
     device = next(model.parameters()).device
     n_sample = seqs.shape[0]
     n_batch = int(np.ceil(n_sample / bs))
@@ -282,6 +294,15 @@ def get_correct_sample_indices(model: nn.Module,
 
 def get_sample_indices_each_class(sample_indices: List, labels: torch.Tensor, masks: torch.Tensor,
                                   n_sample_each_class: int = 200, selected_classes=None):
+    """
+
+    :param sample_indices: input correctly classified samples
+    :param labels:
+    :param masks:
+    :param n_sample_each_class:
+    :param selected_classes:
+    :return:
+    """
 
     if n_sample_each_class is None:
         n_sample_each_class = 200
@@ -310,6 +331,8 @@ def get_all_players_inds(_sentence, tokenizer, stop_words, max_seq_len=50):
         
     players = tokenizer.tokenize(_sentence)
     players = [player for player in players if player not in stop_words]
+    # print("tokenize: ", players)
+    # print("\n")
     if len(players) < 10:
         return []
     else:
@@ -318,6 +341,10 @@ def get_all_players_inds(_sentence, tokenizer, stop_words, max_seq_len=50):
         _selected_players = np.sort(_selected_players)
         return _selected_players
     
+
+
+
+
 
 def get_vn_vempty(args,
                   forward_func, selected_dim,
@@ -336,11 +363,11 @@ def get_vn_vempty(args,
 
 
     foreground = list(flatten(all_players))
-    indices = np.ones(n_words, dtype=bool)
+    indices = np.ones(n_words, dtype=bool)  # n_words = 50, max_seq_len
     indices[foreground] = False
     background = np.arange(n_words)[indices].tolist()
 
-    # calculate AND-OR interactions
+    # calculate interaction
     calculator = AndOrHarsanyi(
         interaction_type=args.interaction,
         model=forward_func, selected_dim=selected_dim,
